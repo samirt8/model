@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prédiction de Crédit</title>
+</head>
+<body>
+    <h1>Prédiction de Crédit</h1>
+    <form action="/predict" method="post">
+        <label for="id_client">ID Client:</label>
+        <input type="text" id="id_client" name="id_client" required>
+        <button type="submit">Prédire</button>
+    </form>
+    {% if prediction_text %}
+        <h2>Résultat : {{ prediction_text }}</h2>
+    {% endif %}
+</body>
+</html>
