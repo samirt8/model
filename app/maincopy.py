@@ -3,64 +3,45 @@ import joblib
 import pandas as pd
 import numpy as np
 import os
-import lightgbm
-import sklearn
-
 
 app = Flask(__name__)
 
 # Charger le modèle
-model_path = os.path.join('model', 'lgbm_model.pkl')
+model_path = 'model/lgbm_model.pkl'
 model = joblib.load(model_path)
 
 # Charger les données d'entraînement
-df = pd.read_csv(os.path.join('model', 'test_data.csv'))
-
-df['SK_ID_CURR'] = df['SK_ID_CURR'].astype(int)  # S'assurer que les IDs sont des entiers
+data_path = 'model/test_data.csv'
+df = pd.read_csv(data_path)
 
 @app.route('/')
 def home():
     return render_template('index.html')
-
 
 @app.route('/predict', methods=['POST'])
 def predict():
     all_id_client = list(df['SK_ID_CURR'].unique())
     seuil = 0.625
 
-    data = request.form
+    data = request.get_json()
     ID = data.get('id_client', '')
 
-    # Débogage - afficher l'ID envoyé par l'utilisateur
-    print(f"ID envoyé par l'utilisateur: {ID}")
-
     try:
-        ID = int(ID)  # Utiliser int si l'ID dans test_data.csv est un entier
+        ID = int(float(ID))
     except ValueError:
         return jsonify({"error": "ID invalide"}), 400
 
-    # Vérifiez que l'ID est bien trouvé dans df
-    if df[df['SK_ID_CURR'] == ID].empty:
-        # Débogage - Affiche le type et le format des IDs
-        print(f"Type de l'ID fourni: {type(ID)}")
-        print(f"ID {ID} n'existe pas dans la base de données")
-        print(f"Les 5 premiers IDs dans la base : {df['SK_ID_CURR'].head()}")  # Afficher les 5 premiers IDs
+    if ID not in all_id_client:
         return jsonify({"error": "Ce client n'est pas répertorié"}), 404
-    else:
-        print(f"ID {ID} trouvé dans les données.")
 
     X = df[df['SK_ID_CURR'] == ID].drop(['SK_ID_CURR'], axis=1)
 
     # Obtenez les colonnes attendues
     expected_columns = model.feature_name_
-
-    # Vérifiez les colonnes manquantes ou en excès
+    
+    # Vérifiez les colonnes
     missing_cols = set(expected_columns) - set(X.columns)
     extra_cols = set(X.columns) - set(expected_columns)
-
-    # Débogage - Afficher les colonnes manquantes et en trop
-    print(f"Colonnes manquantes: {missing_cols}")
-    print(f"Colonnes en trop: {extra_cols}")
 
     # Ajoutez les colonnes manquantes avec des valeurs par défaut
     for col in missing_cols:
@@ -85,7 +66,6 @@ def predict():
 
     return jsonify({"probability": probability_default_payment, "prediction": prediction})
 
-
 @app.route('/prediction_complete')
 def pred_model():
     try:
@@ -103,7 +83,6 @@ def pred_model():
 
     except Exception as e:
         return jsonify({'error': 'Erreur lors de la génération des prédictions'}), 500
-
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
