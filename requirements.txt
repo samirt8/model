@@ -3,5 +3,7 @@ streamlit
 pandas
 joblib
 shap
+scikit-learn==1.3.0
 pip freeze > requirements.txt
-
+requests==2.26.0
+gunicorn==20.1.0
