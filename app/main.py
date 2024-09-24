@@ -10,7 +10,7 @@ import sklearn
 app = Flask(__name__)
 
 # Charger le modèle
-model_path = os.path.join('model', 'lgbm_model.pkl')
+model_path = os.path.join(os.path.dirname(__file__), 'model/lgbm_model.pkl')
 model = joblib.load(model_path)
 
 # Charger les données d'entraînement
