@@ -12,9 +12,12 @@ app = Flask(__name__)
 # Chemin vers le fichier lgbm_model.pkl
 model_path = '/home/ghofrane/model/app/model/lgbm_model.pkl'
 
-# Vérifiez si le fichier existe
+# Vérification si le fichier existe
 if not os.path.isfile(model_path):
     raise FileNotFoundError(f"Le fichier {model_path} n'existe pas!")
+
+# Chargement du modèle
+model = joblib.load(model_path)
 
 # Chargement du modèle
 model = joblib.load(model_path)
