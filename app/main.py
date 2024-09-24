@@ -10,17 +10,11 @@ import sklearn
 app = Flask(__name__)
 
 # Chemin vers le fichier lgbm_model.pkl
-model_path = '/home/ghofrane/model/app/model/lgbm_model.pkl'
-
-# Vérification si le fichier existe
-if not os.path.isfile(model_path):
-    raise FileNotFoundError(f"Le fichier {model_path} n'existe pas!")
-
+model_path = 'model/lgbm_model.pkl'
 # Chargement du modèle
 model = joblib.load(model_path)
 
-# Chargement du modèle
-model = joblib.load(model_path)
+
 
 # Charger les données d'entraînement
 df = pd.read_csv(os.path.join('model', 'test_data.csv'))
