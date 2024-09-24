@@ -4,9 +4,7 @@ import pandas as pd
 import numpy as np
 import os
 import lightgbm
-import sklearn
-
-app = create_app()
+import sklearn  
 
 app = Flask(__name__)
 
