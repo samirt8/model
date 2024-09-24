@@ -6,6 +6,7 @@ import os
 import lightgbm
 import sklearn
 
+app = create_app()
 
 app = Flask(__name__)
 
