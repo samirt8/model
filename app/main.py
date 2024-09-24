@@ -12,8 +12,9 @@ app = Flask(__name__)
 
 
 # Chemin vers le dossier contenant lgbm_model.pkl
-model_path = os.path.join(os.path.dirname(__file__), 'lgbm_model.pkl')
+model_path = os.path.join(os.path.dirname(__file__), 'app/model/lgbm_model.pkl')
 model = joblib.load(model_path)
+
 
 
 
