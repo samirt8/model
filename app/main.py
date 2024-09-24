@@ -10,7 +10,8 @@ import sklearn
 app = Flask(__name__)
 
 # Chemin vers le fichier lgbm_model.pkl
-model_path = 'lgbm_model.pkl'
+model_path = 'app/model/lgbm_model.pkl'
+
 # Chargement du modèle
 model = joblib.load(model_path)
 
