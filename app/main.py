@@ -9,14 +9,8 @@ import sklearn
 
 app = Flask(__name__)
 
-# Chemin vers le fichier lgbm_model.pkl
-model_path = '/home/ghofrane/model/app/model/lgbm_model.pkl'  # Ajustez si nécessaire
-
-
-# Chargement du modèle
-model = joblib.load(model_path)
-
-
+# Récupérer le chemin absolu du fichier
+model_path = os.path.join(os.path.dirname(__file__), 'model', 'lgbm_model.pkl')
 
 # Charger les données d'entraînement
 df = pd.read_csv(os.path.join('model', 'test_data.csv'))
