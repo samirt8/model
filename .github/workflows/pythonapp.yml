@@ -39,4 +39,4 @@ jobs:
       with:
         app-name: 'scoringmodel'  # Remplacez par le nom de votre application Azure
         slot-name: 'production'  # Vous pouvez changer le slot selon vos besoins (par défaut 'production')
-        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}  # Utilisez les secrets GitHub pour stocker les credentials Azure
+        publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
