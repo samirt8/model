@@ -12,7 +12,7 @@ app = Flask(__name__)
 model_path = os.path.join(os.path.dirname(__file__), 'model', 'lgbm_model.pkl')
 
 # Charger les données d'entraînement
-df = pd.read_csv(os.path.join('model', 'test_data.csv'))
+df = pd.read_csv(os.path.join('app/model', 'test_data.csv'))
 
 df['SK_ID_CURR'] = df['SK_ID_CURR'].astype(int)  # S'assurer que les IDs sont des entiers
 
