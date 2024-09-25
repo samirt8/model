@@ -3,68 +3,48 @@ import joblib
 import pandas as pd
 import numpy as np
 import os
-import lightgbm
-import sklearn  
 
 app = Flask(__name__)
 
-# Récupérer le chemin absolu du fichier
+# Charger le modèle LightGBM
 model_path = os.path.join(os.path.dirname(__file__), 'model', 'lgbm_model.pkl')
+model = joblib.load(model_path)
 
 # Charger les données d'entraînement
-df = pd.read_csv(os.path.join('app/model', 'test_data.csv'))
-
+data_path = os.path.join(os.path.dirname(__file__), 'model', 'test_data.csv')
+df = pd.read_csv(data_path)
 df['SK_ID_CURR'] = df['SK_ID_CURR'].astype(int)  # S'assurer que les IDs sont des entiers
 
 @app.route('/')
 def home():
     return render_template('index.html')
 
-
 @app.route('/predict', methods=['POST'])
 def predict():
     all_id_client = list(df['SK_ID_CURR'].unique())
     seuil = 0.625
 
+    # Récupérer l'ID client du formulaire
     data = request.form
     ID = data.get('id_client', '')
 
-    # Débogage - afficher l'ID envoyé par l'utilisateur
-    print(f"ID envoyé par l'utilisateur: {ID}")
-
     try:
-        ID = int(ID)  # Utiliser int si l'ID dans test_data.csv est un entier
+        ID = int(ID)  # Convertir l'ID en entier
     except ValueError:
         return jsonify({"error": "ID invalide"}), 400
 
-    # Vérifiez que l'ID est bien trouvé dans df
+    # Vérifier si l'ID existe dans la base de données
     if df[df['SK_ID_CURR'] == ID].empty:
-        # Débogage - Affiche le type et le format des IDs
-        print(f"Type de l'ID fourni: {type(ID)}")
-        print(f"ID {ID} n'existe pas dans la base de données")
-        print(f"Les 5 premiers IDs dans la base : {df['SK_ID_CURR'].head()}")  # Afficher les 5 premiers IDs
         return jsonify({"error": "Ce client n'est pas répertorié"}), 404
-    else:
-        print(f"ID {ID} trouvé dans les données.")
 
+    # Extraire les données du client
     X = df[df['SK_ID_CURR'] == ID].drop(['SK_ID_CURR'], axis=1)
 
-    # Obtenez les colonnes attendues
+    # Vérifier et réorganiser les colonnes pour correspondre au modèle
     expected_columns = model.feature_name_
-
-    # Vérifiez les colonnes manquantes ou en excès
     missing_cols = set(expected_columns) - set(X.columns)
-    extra_cols = set(X.columns) - set(expected_columns)
-
-    # Débogage - Afficher les colonnes manquantes et en trop
-    print(f"Colonnes manquantes: {missing_cols}")
-    print(f"Colonnes en trop: {extra_cols}")
-
-    # Ajoutez les colonnes manquantes avec des valeurs par défaut
     for col in missing_cols:
         X[col] = 0
-
-    # Réorganisez les colonnes pour correspondre à l'ordre attendu
     X = X[expected_columns]
 
     if X.shape[1] != model.n_features_in_:
@@ -74,15 +54,14 @@ def predict():
             "received_features_count": X.shape[1]
         }), 400
 
+    # Prédiction
     try:
         probability_default_payment = model.predict_proba(X)[:, 1][0]
     except Exception as e:
         return jsonify({'error': f'Erreur lors de la prédiction: {str(e)}'}), 500
 
     prediction = "Prêt NON Accordé, risque de défaut" if probability_default_payment >= seuil else "Prêt Accordé"
-
     return jsonify({"probability": probability_default_payment, "prediction": prediction})
-
 
 @app.route('/prediction_complete')
 def pred_model():
@@ -100,8 +79,7 @@ def pred_model():
         return df_pred.to_json(orient='index')
 
     except Exception as e:
-        return jsonify({'error': 'Erreur lors de la génération des prédictions'}), 500
-
+        return jsonify({'error': f'Erreur lors de la génération des prédictions: {str(e)}'}), 500
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
