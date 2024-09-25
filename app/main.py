@@ -4,16 +4,12 @@ import pandas as pd
 import numpy as np
 import os
 import lightgbm
-import sklearn
-
+import sklearn  
 
 app = Flask(__name__)
 
 # Récupérer le chemin absolu du fichier
 model_path = os.path.join(os.path.dirname(__file__), 'model', 'lgbm_model.pkl')
-
-# Charger le modèle
-model = joblib.load(model_path)
 
 # Charger les données d'entraînement
 df = pd.read_csv(os.path.join('model', 'test_data.csv'))
