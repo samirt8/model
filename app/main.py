@@ -82,4 +82,8 @@ def pred_model():
         return jsonify({'error': f'Erreur lors de la génération des prédictions: {str(e)}'}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    import os
+    # Utilise le port défini dans les variables d'environnement (PORT), sinon utilise 5000 par défaut
+    port = int(os.environ.get('PORT', 5000))
+    # Lancement de l'application Flask avec l'hôte et le port
+    app.run(host='0.0.0.0', port=port)
