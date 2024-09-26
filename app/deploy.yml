@@ -37,6 +37,6 @@ jobs:
     - name: 'Deploy to Azure Web App'
       uses: azure/webapps-deploy@v2
       with:
-        app-name: 'scoringmodel'  # Remplacez par le nom de votre application Azure
+        app-name: 'modelZ'  # Remplacez par le nom de votre application Azure
         slot-name: 'production'  # Vous pouvez changer le slot selon vos besoins (par défaut 'production')
         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}  # Utilisez les secrets GitHub pour stocker les credentials Azure
