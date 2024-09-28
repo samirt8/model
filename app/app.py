@@ -7,11 +7,11 @@ import os
 app = Flask(__name__)
 
 # Charger le modèle LightGBM
-model_path = os.path.join(os.path.dirname(__file__), 'model', 'lgbm_model.pkl')
+model_path = os.path.join('model', 'lgbm_model.pkl')
 model = joblib.load(model_path)
 
 # Charger les données d'entraînement
-data_path = os.path.join(os.path.dirname(__file__), 'model', 'test_data.csv')
+data_path = os.path.join('model', 'test_data.csv')
 df = pd.read_csv(data_path)
 df['SK_ID_CURR'] = df['SK_ID_CURR'].astype(int)  # S'assurer que les IDs sont des entiers
 
