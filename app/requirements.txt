@@ -9,3 +9,4 @@ LightGBM==3.3.2  # Assurez-vous que LightGBM est présent
 Requests==2.26.0
 Gunicorn==20.1.0
 Pytest==7.4.2
+shap==0.42.1
