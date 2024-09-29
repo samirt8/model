@@ -1,12 +1,12 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: 'Build and deploy Python app to Azure Web App: ashy-desert-f89445a6bc964d19b7f9a5b178f250b8'
+name: 'Build and deploy Python Flask app to Azure Web App: ashy-desert'
 
 on:
   push:
     branches:
-    - master
+      - master
   workflow_dispatch:
 
 jobs:
@@ -21,15 +21,24 @@ jobs:
       with:
         python-version: '3.9'
     
+    - name: Change directory to app
+      run: cd app
+    
+    - name: Install dependencies
+      run: |
+        cd app
+        pip install -r requirements.txt
+    
     - name: Build using AppService-Build
       uses: azure/appservice-build@v2
       with:
         platform: python
         platform-version: '3.9'
+        app-location: 'app'
     
     - name: 'Deploy to Azure Web App'
       uses: azure/webapps-deploy@v2
       with: 
         app-name: 'ashy-desert-f89445a6bc964d19b7f9a5b178f250b8'
-        slot-name: 'production'
+        slot-name: 'ashy-desert-f89445a6bc964d19b7f9a5b178f250b8'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_fdd45e179a614c2b950e16ecd4459a36 }}
